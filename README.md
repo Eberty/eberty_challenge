@@ -12,12 +12,12 @@
 # Descrição:
   * Abre imagens para edição e cria novas
   * Oferece opções para fazer quadrados, circulos, triangulos, e desenhar livremente
-   - O programa oferece disponbilidade para canetas com diversas cores
+  * O programa oferece disponbilidade para canetas com diversas cores
   * Interface: Abrir imagens, Salvar imagens e Sair do progama.
   * Painel: Visualizar a imagem e editar
  
- - Entrada:  Pode haver imagnes de entrada (Caso informado pelo usuário)
- - Saída:    Imagem com a devida edição
+    * Entrada:  Pode haver imagnes de entrada (Caso informado pelo usuário)
+    * Saída:    Imagem com a devida edição
  
  Repositorio GIT: https://github.com/romulogcerqueira/eberty_challenge
 
