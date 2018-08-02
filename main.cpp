@@ -7,7 +7,8 @@
  *      Painel: Visualizar a imagem e editar
  * Repositorio GIT: https://github.com/romulogcerqueira/eberty_challenge
  *
- * http://doc.qt.io/archives/qt-4.8/qpainter.html
+ * Help: http://doc.qt.io/archives/qt-4.8/qpainter.html
+ *       http://doc.qt.io/qt-5/qtwidgets-widgets-scribble-example.html
  */
 
 #include "mainwindow.h"

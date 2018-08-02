@@ -7,7 +7,7 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     desenhando = false;
     larguraDaCaneta  = 2;
     corDaCaneta = Qt::black;
-    tipoDeDesenho = quadrado;
+    tipoDeDesenho = livre;
     //inserir primeira imagem na lista
 }
 
@@ -17,7 +17,7 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
     if (!loadedImage.load(fileName))
         return false;
     QSize newSize = loadedImage.size().expandedTo(size());
-    redimensionar(&loadedImage, newSize);
+    redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
     modificado = false;
     update();
@@ -27,7 +27,7 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
 
 bool MiniPaint::salvarImagem(const QString &fileName, const char *fileFormat) {
     QImage visibleImage = imagem;
-    redimensionar(&visibleImage, size());
+    redimensionarTela(&visibleImage, size());
     if (visibleImage.save(fileName, fileFormat)) {
         modificado = false;
         return true;
@@ -131,7 +131,7 @@ void MiniPaint::resizeEvent(QResizeEvent *event) {
     if (width() > imagem.width() || height() > imagem.height()) {
         int newWidth = qMax(width() + 128, imagem.width());
         int newHeight = qMax(height() + 128, imagem.height());
-        redimensionar(&imagem, QSize(newWidth, newHeight));
+        redimensionarTela(&imagem, QSize(newWidth, newHeight));
         update();
     }
     QWidget::resizeEvent(event);
@@ -179,11 +179,12 @@ void MiniPaint::desenhoLivre(const QPoint &endPoint) {
     painter.drawLine(lastPoint, endPoint);
     modificado = true;
     int rad = (larguraDaCaneta / 2) + 2;
-    update(QRect(lastPoint, endPoint).normalized() .adjusted(-rad, -rad, +rad, +rad));
+    update(QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, +rad, +rad));
     lastPoint = endPoint;
 }
 
-void MiniPaint::redimensionar(QImage *imagem, const QSize &newSize) {
+
+void MiniPaint::redimensionarTela(QImage *imagem, const QSize &newSize) {
     if (imagem->size() == newSize)
         return;
     QImage newImage(newSize, QImage::Format_RGB32);

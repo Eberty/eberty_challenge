@@ -7,6 +7,8 @@
 #include <QWidget>
 #include "mainwindow.h"
 
+#define LIMITE_IMAGENS 30
+
 class MiniPaint : public QWidget
 {
     Q_OBJECT
@@ -36,6 +38,9 @@ public:
         return tipoDeDesenho;
     }
 
+    //obter lista
+    //obter qtdImagens
+
 public slots:
     void limparImagem();
 
@@ -51,7 +56,10 @@ private:
     void desenharCirculo(const QPoint &endPoint);
     void desenharTriangulo(const QPoint &endPoint);
     void desenhoLivre(const QPoint &endPoint);
-    void redimensionar(QImage *image, const QSize &newSize);
+    void redimensionarTela(QImage *image, const QSize &newSize);
+
+    //QList<QImage *> imagens;
+    //int qtdImagens;
 
     bool modificado;
     bool desenhando;
