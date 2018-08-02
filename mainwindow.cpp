@@ -41,9 +41,11 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 
 void MainWindow::abrir() {
-    fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp *ppm)"));
-    if (!fileName.isEmpty())
-        miniPaint->abrirImagem(fileName);
+    if (salvarAlteracoes()){
+        fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp *ppm)"));
+        if (!fileName.isEmpty())
+            miniPaint->abrirImagem(fileName);
+    }
 }
 
 
@@ -72,7 +74,7 @@ void MainWindow::larguraCaneta() {
 void MainWindow::tipoDesenho() {
     bool ok;
     QStringList items;
-    items << tr("Desenho Livre") << tr("Quadrado") << tr("Circulo") << tr("Triangulo") << tr("Reta") << tr("Desenhar nada");
+    items << tr("Desenho Livre") << tr("Quadrado") << tr("Circulo") << tr("Triangulo") << tr("Reta") << tr("Texto") << tr("Desenhar nada");
     QString str = QInputDialog::getItem(this, tr("Tipo de desenho"), tr("Escolha como deseja desenhar:"), items, miniPaint->getTipoDesenho(), false, &ok);
     if(ok && !str.isEmpty()){
         int newFormat;
@@ -84,6 +86,8 @@ void MainWindow::tipoDesenho() {
             newFormat = triangulo;
         else if (str == "Reta")
             newFormat = reta;
+        else if (str == "Texto")
+            newFormat = texto;
         else if (str == "Desenhar nada")
             newFormat = nada;
         else
@@ -194,7 +198,8 @@ void MainWindow::criarMenu() {
 
 bool MainWindow::salvarAlteracoes() {
     if (miniPaint->getAlterado()) {
-       QMessageBox::StandardButton ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+       QMessageBox::StandardButton ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"),
+                                                               QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
        if (ret == QMessageBox::Save)
            return salvarArquivo("png");
         else if (ret == QMessageBox::Cancel)
@@ -207,7 +212,8 @@ bool MainWindow::salvarAlteracoes() {
 bool MainWindow::salvarArquivo(const QByteArray &fileFormat) {
     //QMessageBox::about(this, tr("teste"), tr("%1").arg(fileName));
     QString initialPath = QDir::homePath() + "/meuArquivo." + fileFormat;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("%1 Files (*.%2);;All Files (*)").arg(QString::fromLatin1(fileFormat.toUpper())).arg(QString::fromLatin1(fileFormat)));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("%1 Files (*.%2);;All Files (*)")
+                                                    .arg(QString::fromLatin1(fileFormat.toUpper())).arg(QString::fromLatin1(fileFormat)));
     if (fileName.isEmpty())
         return false;
     else

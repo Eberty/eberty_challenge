@@ -156,6 +156,8 @@ void MiniPaint::mouseReleaseEvent(QMouseEvent *event) {
             break;
         case reta:
             desenhoLivre(event->pos());
+        case texto:
+            desenharTexto(event->pos());
             break;
         default:
             break;
@@ -196,6 +198,21 @@ void MiniPaint::desenharCirculo(const QPoint &endPoint) {
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawEllipse(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
     alterado = true;
+    update();
+}
+
+
+void MiniPaint::desenharTexto(const QPoint &endPoint) {
+    QPainter painter(&imagem);
+    bool ok;
+    QString str = QInputDialog::getText(this, tr("Seu texto"), tr("Digite aqui seu texto:"), QLineEdit::Normal, "", &ok);
+    if(ok && !str.isEmpty()){
+        painter.drawText(endPoint, str);
+        alterado = true;
+    } else {
+        imagens.pop_back();
+        indiceImagem--;
+    }
     update();
 }
 

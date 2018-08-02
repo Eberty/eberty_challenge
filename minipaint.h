@@ -70,6 +70,7 @@ protected:
 private:
     void desenharQuadrado(const QPoint &endPoint);
     void desenharCirculo(const QPoint &endPoint);
+    void desenharTexto(const QPoint &endPoint);
     void desenharTriangulo(const QPoint &endPoint);
     void desenhoLivre(const QPoint &endPoint);
     void redimensionarTela(QImage *image, const QSize &newSize);
@@ -81,10 +82,9 @@ private:
     int larguraDaCaneta;
     QColor corDaCaneta;
 
-    QImage imagem;
     QPoint lastPoint;
-
     QList<QImage *> imagens;
+    QImage imagem;
     QImage outraImagem;
     int indiceImagem;
 };

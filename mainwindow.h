@@ -19,7 +19,7 @@
 
 
 typedef enum {
-    livre, quadrado, circulo, triangulo, reta, nada
+    livre, quadrado, circulo, triangulo, reta, texto, nada
 } t_desenho;
 
 
