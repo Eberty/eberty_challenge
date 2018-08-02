@@ -1,3 +1,16 @@
+/****
+*
+* Título: minipaint.cpp
+*
+* Autor: Eberty Alves
+*
+* Data de Criação: 31 de julho de 2018
+* Última modificação: 03 de agosto de 2018
+*
+* Descrição: Implementações para minipaint.h
+*
+****/
+
 #include <QtWidgets>
 #include "minipaint.h"
 

@@ -1,16 +1,26 @@
 /*
- * Programa: MiniPaint - Eberty Alves
+ * Titulo: MiniPaint
+ *
+ * Autor: Eberty Alves da Silva
  *
  * Entrega: Sexta-feira (03/08/2018) às 15h
  * Codigo em C++: QT Desktop
  *
- * O que o prgrama deve fazer:
- *      - Abrir uma imagem
- *      - Opções para fazer quadrado, circulo, triangulo, e linha livre (qualquer cor)
- *      - Interface: open, save, quit
+ *
+ * Data de Criação: 31 de julho de 2018
+ * Última modificação: 02 de agosto de 2018
+ *
+ * Descrição:
+ *      - Abre imagens ou cria novas
+ *      - Oferece opções para fazer quadrados, circulos, triangulos, e desenhar livremente
+ *          O programa oferece disponbilidade para canetas com diversas cores
+ *      - Interface: Abrir imagens, Salvar imagens e Sair do progama.
  *      - Painel: Visualizar a imagem e editar
  *
- * Uppar no repositorio GIT: https://github.com/romulogcerqueira/eberty_challenge
+ * Entrada:  Pode haver imagnes de entrada (Caso informado pelo usuário)
+ * Saída:    Imagem com a devida edição
+ *
+ * Repositorio GIT: https://github.com/romulogcerqueira/eberty_challenge
  *
  * Help: http://doc.qt.io/archives/qt-4.8/qpainter.html
  *       http://doc.qt.io/qt-5/qtwidgets-widgets-scribble-example.html

@@ -1,8 +1,22 @@
+/****
+*
+* Título: mainwindow.h
+*
+* Autor: Eberty Alves
+*
+* Data de Criação: 31 de julho de 2018
+* Última modificação: 03 de agosto de 2018
+*
+* Descrição: Classe relativa a tela onde a imagem é editada
+*
+****/
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QList>
 #include <QMainWindow>
+
 
 typedef enum {
     livre, quadrado, circulo, triangulo, reta, nada

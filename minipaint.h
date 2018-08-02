@@ -1,3 +1,16 @@
+/****
+*
+* Título: minipaint.h
+*
+* Autor: Eberty Alves
+*
+* Data de Criação: 31 de julho de 2018
+* Última modificação: 03 de agosto de 2018
+*
+* Descrição: Classe relativa as ações realizadas pelo usuario
+*
+****/
+
 #ifndef MINIPAINT_H
 #define MINIPAINT_H
 

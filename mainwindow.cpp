@@ -1,3 +1,16 @@
+/****
+*
+* Título: mainwindow.cpp
+*
+* Autor: Eberty Alves
+*
+* Data de Criação: 31 de julho de 2018
+* Última modificação: 03 de agosto de 2018
+*
+* Descrição: Implementações para mainwindow.h
+*
+****/
+
 #include <QtWidgets>
 #include "mainwindow.h"
 #include "minipaint.h"
@@ -8,6 +21,8 @@ MainWindow::MainWindow() {
     setCentralWidget(miniPaint);
     criarAcoes();
     criarMenu();
+    //QString message = tr("A context menu is available by right-clicking");
+    //statusBar()->showMessage(message);
     resize(600, 450);
     fileName = "";
     setWindowTitle(tr("Eberty Challenge - MiniPaint"));
@@ -101,6 +116,7 @@ void MainWindow::criarAcoes() {
     connect(acaoAbrir, SIGNAL(triggered()), this, SLOT(abrir()));
 
     acaoSalvar = new QAction(tr("Salvar"), this);
+    acaoSalvar->setShortcut(QKeySequence::Save);
     connect(acaoSalvar, SIGNAL(triggered()), this, SLOT(salvar()));
 
     //Salvar como
@@ -117,12 +133,15 @@ void MainWindow::criarAcoes() {
     connect(acaoSair, SIGNAL(triggered()), this, SLOT(close()));
 
     acaoCorCaneta = new QAction(tr("Cor da caneta"), this);
+    acaoCorCaneta->setShortcut(tr("Ctrl+1"));
     connect(acaoCorCaneta, SIGNAL(triggered()), this, SLOT(corCaneta()));
 
     acaoLarguraCaneta = new QAction(tr("Largura da caneta"), this);
+    acaoLarguraCaneta->setShortcut(tr("Ctrl+2"));
     connect(acaoLarguraCaneta, SIGNAL(triggered()), this, SLOT(larguraCaneta()));
 
     acaoTipoDesenho = new QAction(tr("Definir tipo de desenho"), this);
+    acaoTipoDesenho->setShortcut(tr("Ctrl+3"));
     connect(acaoTipoDesenho, SIGNAL(triggered()), this, SLOT(tipoDesenho()));
 
     acaoDesfazer = new QAction(tr("Desfazer"), this);
@@ -138,6 +157,7 @@ void MainWindow::criarAcoes() {
     connect(acaoLimparTela, SIGNAL(triggered()), miniPaint, SLOT(limparImagem()));
 
     acaoSobre = new QAction(tr("Sobre"), this);
+    acaoSobre->setShortcut(tr("Ctrl+h"));
     connect(acaoSobre, SIGNAL(triggered()), this, SLOT(sobre()));
 }
 
