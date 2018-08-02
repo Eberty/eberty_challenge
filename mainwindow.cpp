@@ -1,4 +1,3 @@
-#include <iostream>
 #include <QtWidgets>
 #include "mainwindow.h"
 #include "minipaint.h"
@@ -10,12 +9,16 @@ MainWindow::MainWindow() {
     criarAcoes();
     criarMenu();
     resize(600, 450);
-    setWindowTitle(tr("Eberty Challenge - MeuPaint"));
+    setWindowTitle(tr("Eberty Challenge - MiniPaint"));
+}
+
+MainWindow::~MainWindow(){
+
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if (salvarMudancas()) {
+    if (salvarAlteracoes()) {
         event->accept();
     } else {
         event->ignore();
@@ -24,11 +27,9 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 
 void MainWindow::abrir() {
-    if (salvarMudancas()) {
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::currentPath());
-        if (!fileName.isEmpty())
-            miniPaint->abrirImagem(fileName);
-    }
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::currentPath());
+    if (!fileName.isEmpty())
+        miniPaint->abrirImagem(fileName);
 }
 
 
@@ -48,7 +49,7 @@ void MainWindow::corCaneta() {
 
 void MainWindow::larguraCaneta() {
     bool ok;
-    int newWidth = QInputDialog::getInt(this, tr("Meu Paint"), tr("Selecione a largura da caneta:"), miniPaint->getLarguraCaneta(), 1, 50, 1, &ok);
+    int newWidth = QInputDialog::getInt(this, tr("MiniPaint"), tr("Selecione a largura da caneta:"), miniPaint->getLarguraCaneta(), 1, 50, 1, &ok);
     if (ok)
         miniPaint->setLarguraCaneta(newWidth);
 }
@@ -58,7 +59,7 @@ void MainWindow::tipoDesenho() {
     bool ok;
     QStringList items;
     items << tr("Desenho Livre") << tr("Quadrado") << tr("Circulo") << tr("Triangulo") << tr("Reta") << tr("Desenhar nada");
-    QString str = QInputDialog::getItem(this, tr("Tipo de desenho"), tr("Escolha como deseja desenhar:"), items, 0, false, &ok);
+    QString str = QInputDialog::getItem(this, tr("Tipo de desenho"), tr("Escolha como deseja desenhar:"), items, miniPaint->getTipoDesenho(), false, &ok);
     if(ok && !str.isEmpty()){
         int newFormat;
         if (str == "Quadrado")
@@ -73,22 +74,22 @@ void MainWindow::tipoDesenho() {
             newFormat = nada;
         else
             newFormat = livre;
-        miniPaint->setTtipoDeDesenho(newFormat);
+        miniPaint->setTipoDeDesenho(newFormat);
     }
 }
 
 void MainWindow::desfazer(){
-    QMessageBox::about(this, tr("desfazer"), tr("desfazer"));
+    miniPaint->setImagemAntiga();
 }
 
 
 void MainWindow::refazer(){
-    QMessageBox::about(this, tr("refazer"), tr("refazer"));
+    miniPaint->setImagemNova();
 }
 
 
 void MainWindow::sobre() {
-    QMessageBox::about(this, tr("Meu Paint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br><br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
+    QMessageBox::about(this, tr("MiniPaint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br><br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
 }
 
 
@@ -178,10 +179,10 @@ void MainWindow::criarMenu() {
 }
 
 
-bool MainWindow::salvarMudancas() {
-    if (miniPaint->getModificado()) {
+bool MainWindow::salvarAlteracoes() {
+    if (miniPaint->getAlterado()) {
        QMessageBox::StandardButton ret;
-       ret = QMessageBox::question(this, tr("Meu Paint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+       ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
        if (ret == QMessageBox::Save)
            return salvarArquivo("jpeg");
@@ -195,7 +196,6 @@ bool MainWindow::salvarMudancas() {
 bool MainWindow::salvarArquivo(const QByteArray &fileFormat) {
     QString initialPath = QDir::homePath() + "/meuArquivo." + fileFormat;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("%1 Files (*.%2);;All Files (*)").arg(QString::fromLatin1(fileFormat.toUpper())).arg(QString::fromLatin1(fileFormat)));
-
     if (fileName.isEmpty())
         return false;
     else

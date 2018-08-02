@@ -1,5 +1,5 @@
-#ifndef SCRIBBLEAREA_H
-#define SCRIBBLEAREA_H
+#ifndef MINIPAINT_H
+#define MINIPAINT_H
 
 #include <QColor>
 #include <QImage>
@@ -7,7 +7,7 @@
 #include <QWidget>
 #include "mainwindow.h"
 
-#define LIMITE_IMAGENS 30
+//#define LIMITE_IMAGENS 30
 
 class MiniPaint : public QWidget
 {
@@ -20,10 +20,12 @@ public:
     bool salvarImagem(const QString &fileName, const char *fileFormat);
     void setCorCaneta(const QColor &newColor);
     void setLarguraCaneta(int newWidth);
-    void setTtipoDeDesenho(int newFormat);
+    void setTipoDeDesenho(int newFormat);
+    void setImagemAntiga();
+    void setImagemNova();
 
-    bool getModificado() const {
-        return modificado;
+    bool getAlterado() const {
+        return alterado;
     }
 
     QColor getCorCaneta() const {
@@ -38,8 +40,6 @@ public:
         return tipoDeDesenho;
     }
 
-    //obter lista
-    //obter qtdImagens
 
 public slots:
     void limparImagem();
@@ -52,16 +52,16 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void desenharQuadrado(const QPoint &endPoint);
-    void desenharCirculo(const QPoint &endPoint);
-    void desenharTriangulo(const QPoint &endPoint);
-    void desenhoLivre(const QPoint &endPoint);
+    void desenharQuadrado(const QPoint &endPoint, const bool movendo);
+    void desenharCirculo(const QPoint &endPoint, const bool movendo);
+    void desenharTriangulo(const QPoint &endPoint, const bool movendo);
+    void desenhoLivre(const QPoint &endPoint, const bool movendo);
     void redimensionarTela(QImage *image, const QSize &newSize);
 
-    //QList<QImage *> imagens;
-    //int qtdImagens;
+    QList<QImage *> imagens;
+    int posImagem;
 
-    bool modificado;
+    bool alterado;
     bool desenhando;
     int tipoDeDesenho;
 
@@ -69,6 +69,7 @@ private:
     QColor corDaCaneta;
 
     QImage imagem;
+    QImage image_copy;
     QPoint lastPoint;
 };
 

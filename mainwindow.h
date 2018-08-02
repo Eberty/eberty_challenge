@@ -16,13 +16,15 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+    ~MainWindow();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
 
-private slots: // Triggered
+private slots: // Trigger
     void abrir();
     void salvar();
+    //sair = close function
     void corCaneta();
     void larguraCaneta();
     void tipoDesenho();
@@ -34,7 +36,7 @@ private:
     void criarAcoes();
     void criarMenu();
 
-    bool salvarMudancas();
+    bool salvarAlteracoes();
     bool salvarArquivo(const QByteArray &fileFormat);
 
     MiniPaint *miniPaint;

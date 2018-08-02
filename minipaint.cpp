@@ -3,12 +3,11 @@
 
 MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_StaticContents);
-    modificado = false;
+    alterado = false;
     desenhando = false;
     larguraDaCaneta  = 2;
     corDaCaneta = Qt::black;
-    tipoDeDesenho = livre;
-    //inserir primeira imagem na lista
+    tipoDeDesenho = quadrado;
 }
 
 
@@ -19,7 +18,7 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
     QSize newSize = loadedImage.size().expandedTo(size());
     redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
-    modificado = false;
+    alterado = false;
     update();
     return true;
 }
@@ -29,7 +28,7 @@ bool MiniPaint::salvarImagem(const QString &fileName, const char *fileFormat) {
     QImage visibleImage = imagem;
     redimensionarTela(&visibleImage, size());
     if (visibleImage.save(fileName, fileFormat)) {
-        modificado = false;
+        alterado = false;
         return true;
     } else {
         return false;
@@ -47,19 +46,40 @@ void MiniPaint::setLarguraCaneta(int newWidth) {
 }
 
 
-void MiniPaint::setTtipoDeDesenho(int newFormat) {
+void MiniPaint::setTipoDeDesenho(int newFormat) {
     tipoDeDesenho = newFormat;
 }
 
 
+void MiniPaint::setImagemAntiga(){
+    //QMessageBox::about(this, tr("Desfazer"), tr("%1").arg(imagens.size()));
+    QPainter painter(&imagem);
+    painter.drawImage(QPoint(0, 0), *imagens.at(--posImagem));
+    update();
+}
+
+void MiniPaint::setImagemNova(){
+    QMessageBox::about(this, tr("Refazer"), tr("%1").arg(imagens.size()));
+    //QPainter painter(&imagem);
+    //painter.drawImage(QPoint(0, 0), image_copy);
+    //update();
+}
+
 void MiniPaint::limparImagem() {
     imagem.fill(qRgb(255, 255, 255));
-    modificado = true;
+    alterado = true;
     update();
 }
 
 
 void MiniPaint::mousePressEvent(QMouseEvent *event) {
+    //Salvar imagem na lista aqui
+    image_copy = imagem.copy();
+    //se posicao atual != size-1
+    //remover occorrencias
+    imagens.append(&image_copy);
+    posImagem++;
+
     if (event->button() == Qt::LeftButton) {
         lastPoint = event->pos();
         desenhando = true;
@@ -71,22 +91,21 @@ void MiniPaint::mouseMoveEvent(QMouseEvent *event) {
     if ((event->buttons() & Qt::LeftButton) && desenhando){
         switch (MiniPaint::getTipoDesenho()) {
         case livre:
-            desenhoLivre(event->pos());
+            desenhoLivre(event->pos(), true);
             break;
         case quadrado:
-            //desenhoLivre(event->pos());
+            //desenharQuadrado(event->pos(), true);
             break;
         case circulo:
-            //desenhoLivre(event->pos());
+            //desenharCirculo(event->pos(), true);
             break;
         case triangulo:
-            //desenhoLivre(event->pos());
+            //desenharTriangulo(event->pos(), true);
             break;
         case reta:
-            //desenhoLivre(event->pos());
+            //desenhoLivre(event->pos(), true);
             break;
         default:
-            //desenhoLivre(event->pos());
             break;
         }
     }
@@ -94,28 +113,28 @@ void MiniPaint::mouseMoveEvent(QMouseEvent *event) {
 
 
 void MiniPaint::mouseReleaseEvent(QMouseEvent *event) {
-    //Salvar imagem na lista aqui
     if (event->button() == Qt::LeftButton && desenhando) {
         switch (MiniPaint::getTipoDesenho()) {
         case livre:
-            desenhoLivre(event->pos());
+            desenhoLivre(event->pos(), false);
             break;
         case quadrado:
-            desenharQuadrado(event->pos());
+            desenharQuadrado(event->pos(), false);
             break;
         case circulo:
-            desenharCirculo(event->pos());
+            desenharCirculo(event->pos(), false);
             break;
         case triangulo:
-            desenharTriangulo(event->pos());
+            desenharTriangulo(event->pos(), false);
             break;
         case reta:
-            desenhoLivre(event->pos());
+            desenhoLivre(event->pos(), false);
             break;
         default:
             break;
         }
         desenhando = false;
+        lastPoint = event->pos();
     }
 }
 
@@ -138,30 +157,30 @@ void MiniPaint::resizeEvent(QResizeEvent *event) {
 }
 
 
-void MiniPaint::desenharQuadrado(const QPoint &endPoint) {
+void MiniPaint::desenharQuadrado(const QPoint &endPoint, const bool movendo) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    modificado = true;
+    alterado = true;
     painter.drawRect(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
     update();
-    lastPoint = endPoint;
+    //QImage image_copy = imagem.copy();
+    //painter.drawImage(QPoint(0, 0), image_copy);
 }
 
 
-void MiniPaint::desenharCirculo(const QPoint &endPoint) {
+void MiniPaint::desenharCirculo(const QPoint &endPoint, const bool movendo) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    modificado = true;
+    alterado = true;
     painter.drawEllipse(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
     update();
-    lastPoint = endPoint;
 }
 
 
-void MiniPaint::desenharTriangulo(const QPoint &endPoint) {
+void MiniPaint::desenharTriangulo(const QPoint &endPoint, const bool movendo) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    modificado = true;
+    alterado = true;
     const QPointF points[3] = {
         QPointF(lastPoint.x(), lastPoint.y()),
         QPointF((lastPoint.x() + endPoint.x())/2, endPoint.y()),
@@ -169,15 +188,14 @@ void MiniPaint::desenharTriangulo(const QPoint &endPoint) {
     };
     painter.drawPolygon(points, 3);
     update();
-    lastPoint = endPoint;
 }
 
 
-void MiniPaint::desenhoLivre(const QPoint &endPoint) {
+void MiniPaint::desenhoLivre(const QPoint &endPoint, const bool movendo) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
-    modificado = true;
+    alterado = true;
     int rad = (larguraDaCaneta / 2) + 2;
     update(QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, +rad, +rad));
     lastPoint = endPoint;
