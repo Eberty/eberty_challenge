@@ -21,7 +21,8 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     larguraDaCaneta  = 3;
     corDaCaneta = Qt::black;
     tipoDeDesenho = quadrado;
-    b_imagemAntiga = false;
+    qtdImagens = 0;
+    //b_imagemAntiga = false;
 }
 
 
@@ -65,24 +66,23 @@ void MiniPaint::setTipoDeDesenho(int newFormat) {
 
 
 void MiniPaint::setImagemAntiga(){
-    if(!b_imagemAntiga){
-        imagemNova = imagem.copy();
+    if(qtdImagens > 0){
         QPainter painter(&imagem);
-        painter.drawImage(QPoint(0, 0), imagemAntiga);
+        outraImagem = *imagens.at(--qtdImagens);
+        painter.drawImage(QPoint(0, 0), outraImagem);
         update();
-        b_imagemAntiga = true;
     } else {
-        QMessageBox::about(this, tr("Imagem Anterior!"), tr("Só pode voltar uma vez"));
+        QMessageBox::about(this, tr("Ultima Imagem!"), tr("Não é mais possível voltar"));
     }
 }
 
 
 void MiniPaint::setImagemNova(){
-    if(b_imagemAntiga){
+    if(qtdImagens < imagens.size()-1){
         QPainter painter(&imagem);
-        painter.drawImage(QPoint(0, 0), imagemNova);
+        outraImagem = *imagens.at(++qtdImagens);
+        painter.drawImage(QPoint(0, 0), outraImagem);
         update();
-        b_imagemAntiga = false;
     } else {
         QMessageBox::about(this, tr("Imagem Nova!"), tr("Não há mais o que avançar"));
     }
@@ -90,17 +90,33 @@ void MiniPaint::setImagemNova(){
 
 
 void MiniPaint::limparImagem() {
+    while (qtdImagens < imagens.size()){
+        imagens.pop_back();
+    }
+    MiniPaint::addImagem();
+
     imagem.fill(Qt::white);
     alterado = true;
     update();
 }
 
 
-void MiniPaint::mousePressEvent(QMouseEvent *event) {
-    imagemAntiga = imagem.copy();
-    b_imagemAntiga = false;
+void MiniPaint::addImagem(){
+    QImage *aux = new QImage;
+    *aux = imagem.copy();
+    imagens.push_back(aux);
+    qtdImagens++;
+}
 
+
+void MiniPaint::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
+        if(MiniPaint::getTipoDesenho() != nada){
+            while (qtdImagens < imagens.size()){
+                imagens.pop_back();
+            }
+            MiniPaint::addImagem();
+        }
         lastPoint = event->pos();
         desenhando = true;
     }
@@ -112,18 +128,6 @@ void MiniPaint::mouseMoveEvent(QMouseEvent *event) {
         switch (MiniPaint::getTipoDesenho()) {
         case livre:
             desenhoLivre(event->pos());
-            break;
-        case quadrado:
-            //desenharQuadrado(event->pos(), true);
-            break;
-        case circulo:
-            //desenharCirculo(event->pos(), true);
-            break;
-        case triangulo:
-            //desenharTriangulo(event->pos(), true);
-            break;
-        case reta:
-            //desenhoLivre(event->pos(), true);
             break;
         default:
             break;

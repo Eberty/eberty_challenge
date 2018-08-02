@@ -21,8 +21,6 @@ MainWindow::MainWindow() {
     setCentralWidget(miniPaint);
     criarAcoes();
     criarMenu();
-    //QString message = tr("A context menu is available by right-clicking");
-    //statusBar()->showMessage(message);
     resize(600, 450);
     fileName = "";
     setWindowTitle(tr("Eberty Challenge - MiniPaint"));

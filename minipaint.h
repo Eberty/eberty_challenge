@@ -32,6 +32,8 @@ public:
     bool abrirImagem(const QString &fileName);
     bool salvarImagem(const QString &fileName, const char *fileFormat);
 
+    void addImagem();
+
     void setCorCaneta(const QColor &newColor);
     void setLarguraCaneta(int newWidth);
     void setTipoDeDesenho(int newFormat);
@@ -82,9 +84,11 @@ private:
     QImage imagem;
     QPoint lastPoint;
 
-    bool b_imagemAntiga;
-    QImage imagemAntiga;
-    QImage imagemNova;
+    QList<QImage *> imagens;
+    QImage outraImagem;
+    int qtdImagens;
+    //QImage imagemAntiga;
+    //bool b_imagemAntiga;
 };
 
 #endif
