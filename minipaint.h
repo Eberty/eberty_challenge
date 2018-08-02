@@ -52,14 +52,12 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void desenharQuadrado(const QPoint &endPoint, const bool movendo);
-    void desenharCirculo(const QPoint &endPoint, const bool movendo);
-    void desenharTriangulo(const QPoint &endPoint, const bool movendo);
-    void desenhoLivre(const QPoint &endPoint, const bool movendo);
+    void desenharQuadrado(const QPoint &endPoint);
+    void desenharCirculo(const QPoint &endPoint);
+    void desenharTriangulo(const QPoint &endPoint);
+    void desenhoLivre(const QPoint &endPoint);
     void redimensionarTela(QImage *image, const QSize &newSize);
 
-    QList<QImage *> imagens;
-    int posImagem;
 
     bool alterado;
     bool desenhando;
@@ -69,8 +67,11 @@ private:
     QColor corDaCaneta;
 
     QImage imagem;
-    QImage image_copy;
     QPoint lastPoint;
+
+    bool b_imagemAntiga;
+    QImage imagemAntiga;
+    QImage imagemNova;
 };
 
 #endif

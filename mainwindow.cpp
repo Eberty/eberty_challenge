@@ -174,7 +174,6 @@ void MainWindow::criarMenu() {
     menuBar()->addMenu(menuArquivo);
     menuBar()->addMenu(menuOpcoes);
 
-    //menuBar()->addAction(acaoSobre);
     menuBar()->addMenu(menuSobre);
 }
 
@@ -185,7 +184,7 @@ bool MainWindow::salvarAlteracoes() {
        ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
        if (ret == QMessageBox::Save)
-           return salvarArquivo("jpeg");
+           return salvarArquivo("png");
         else if (ret == QMessageBox::Cancel)
            return false;
     }
