@@ -26,8 +26,8 @@ private slots: // Triggered
     void corCaneta();
     void larguraCaneta();
     void tipoDesenho();
-    //void desfazer();
-    //void refazer();
+    void desfazer();
+    void refazer();
     void sobre();
 
 private:

@@ -54,11 +54,6 @@ void MainWindow::larguraCaneta() {
 }
 
 
-void MainWindow::sobre() {
-    QMessageBox::about(this, tr("Meu Paint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br><br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
-}
-
-
 void MainWindow::tipoDesenho() {
     bool ok;
     QStringList items;
@@ -80,6 +75,20 @@ void MainWindow::tipoDesenho() {
             newFormat = livre;
         miniPaint->setTtipoDeDesenho(newFormat);
     }
+}
+
+void MainWindow::desfazer(){
+
+}
+
+
+void MainWindow::refazer(){
+
+}
+
+
+void MainWindow::sobre() {
+    QMessageBox::about(this, tr("Meu Paint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br><br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
 }
 
 
@@ -118,12 +127,12 @@ void MainWindow::criarAcoes() {
     //Desfazer...
     acaoDesfazer = new QAction(tr("Desfazer"), this);
     acaoDesfazer->setShortcut(tr("Ctrl+Z"));
-    //connect(acaoDesfazer, SIGNAL(triggered()), miniPaint, SLOT(()));
+    connect(acaoDesfazer, SIGNAL(triggered()), miniPaint, SLOT(desfazer()));
 
     //Refazer...
     acaoRefazer = new QAction(tr("Refazer"), this);
     acaoRefazer->setShortcut(tr("Ctrl+Y"));
-    //connect(acaoRefazer, SIGNAL(triggered()), miniPaint, SLOT(()));
+    connect(acaoRefazer, SIGNAL(triggered()), miniPaint, SLOT(refazer()));
 
     //Limpar tela...
     acaoLimparTela = new QAction(tr("Limpar tela"), this);
