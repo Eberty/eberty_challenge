@@ -78,12 +78,12 @@ void MainWindow::tipoDesenho() {
 }
 
 void MainWindow::desfazer(){
-
+    QMessageBox::about(this, tr("desfazer"), tr("desfazer"));
 }
 
 
 void MainWindow::refazer(){
-
+    QMessageBox::about(this, tr("refazer"), tr("refazer"));
 }
 
 
@@ -127,12 +127,12 @@ void MainWindow::criarAcoes() {
     //Desfazer...
     acaoDesfazer = new QAction(tr("Desfazer"), this);
     acaoDesfazer->setShortcut(tr("Ctrl+Z"));
-    connect(acaoDesfazer, SIGNAL(triggered()), miniPaint, SLOT(desfazer()));
+    connect(acaoDesfazer, SIGNAL(triggered()), this, SLOT(desfazer()));
 
     //Refazer...
     acaoRefazer = new QAction(tr("Refazer"), this);
     acaoRefazer->setShortcut(tr("Ctrl+Y"));
-    connect(acaoRefazer, SIGNAL(triggered()), miniPaint, SLOT(refazer()));
+    connect(acaoRefazer, SIGNAL(triggered()), this, SLOT(refazer()));
 
     //Limpar tela...
     acaoLimparTela = new QAction(tr("Limpar tela"), this);
