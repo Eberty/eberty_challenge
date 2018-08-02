@@ -9,8 +9,10 @@ MainWindow::MainWindow() {
     criarAcoes();
     criarMenu();
     resize(600, 450);
+    fileName = "";
     setWindowTitle(tr("Eberty Challenge - MiniPaint"));
 }
+
 
 MainWindow::~MainWindow(){
 
@@ -18,16 +20,15 @@ MainWindow::~MainWindow(){
 
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    if (salvarAlteracoes()) {
+    if (salvarAlteracoes())
         event->accept();
-    } else {
+    else
         event->ignore();
-    }
 }
 
 
 void MainWindow::abrir() {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::currentPath());
+    fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp *ppm)"));
     if (!fileName.isEmpty())
         miniPaint->abrirImagem(fileName);
 }
@@ -49,7 +50,7 @@ void MainWindow::corCaneta() {
 
 void MainWindow::larguraCaneta() {
     bool ok;
-    int newWidth = QInputDialog::getInt(this, tr("MiniPaint"), tr("Selecione a largura da caneta:"), miniPaint->getLarguraCaneta(), 1, 50, 1, &ok);
+    int newWidth = QInputDialog::getInt(this, tr("MiniPaint"), tr("Selecione a largura da caneta:"), miniPaint->getLarguraCaneta(), 1, 30, 1, &ok);
     if (ok)
         miniPaint->setLarguraCaneta(newWidth);
 }
@@ -78,6 +79,7 @@ void MainWindow::tipoDesenho() {
     }
 }
 
+
 void MainWindow::desfazer(){
     miniPaint->setImagemAntiga();
 }
@@ -94,53 +96,47 @@ void MainWindow::sobre() {
 
 
 void MainWindow::criarAcoes() {
-    //Abrir aqruivos
     acaoAbrir = new QAction(tr("&Abrir"), this);
     acaoAbrir->setShortcuts(QKeySequence::Open);
     connect(acaoAbrir, SIGNAL(triggered()), this, SLOT(abrir()));
 
-    //Salvar como: obter lista com todos os formatos de imagens suportados
-    foreach (QByteArray format, QImageWriter::supportedImageFormats()) {
-        QString text = tr("%1").arg(QString(format).toUpper());
+    acaoSalvar = new QAction(tr("Salvar"), this);
+    connect(acaoSalvar, SIGNAL(triggered()), this, SLOT(salvar()));
+
+    //Salvar como
+    foreach (QByteArray formato, QImageWriter::supportedImageFormats()) {
+        QString text = tr("%1").arg(QString(formato).toUpper());
         QAction *action = new QAction(text, this);
-        action->setData(format);
+        action->setData(formato);
         connect(action, SIGNAL(triggered()), this, SLOT(salvar()));
         acaoSalvarComo.append(action);
     }
 
-    //Sair do programa
     acaoSair = new QAction(tr("&Sair"), this);
     acaoSair->setShortcuts(QKeySequence::Quit);
     connect(acaoSair, SIGNAL(triggered()), this, SLOT(close()));
 
-    //Definir cor da caneta
     acaoCorCaneta = new QAction(tr("Cor da caneta"), this);
     connect(acaoCorCaneta, SIGNAL(triggered()), this, SLOT(corCaneta()));
 
-    //Definir largura da caneta
     acaoLarguraCaneta = new QAction(tr("Largura da caneta"), this);
     connect(acaoLarguraCaneta, SIGNAL(triggered()), this, SLOT(larguraCaneta()));
 
-    //Definir tipo de desenho
     acaoTipoDesenho = new QAction(tr("Definir tipo de desenho"), this);
     connect(acaoTipoDesenho, SIGNAL(triggered()), this, SLOT(tipoDesenho()));
 
-    //Desfazer...
     acaoDesfazer = new QAction(tr("Desfazer"), this);
     acaoDesfazer->setShortcut(tr("Ctrl+Z"));
     connect(acaoDesfazer, SIGNAL(triggered()), this, SLOT(desfazer()));
 
-    //Refazer...
     acaoRefazer = new QAction(tr("Refazer"), this);
     acaoRefazer->setShortcut(tr("Ctrl+Y"));
     connect(acaoRefazer, SIGNAL(triggered()), this, SLOT(refazer()));
 
-    //Limpar tela...
     acaoLimparTela = new QAction(tr("Limpar tela"), this);
     acaoLimparTela->setShortcut(tr("Ctrl+L"));
     connect(acaoLimparTela, SIGNAL(triggered()), miniPaint, SLOT(limparImagem()));
 
-    //Sobre...
     acaoSobre = new QAction(tr("Sobre"), this);
     connect(acaoSobre, SIGNAL(triggered()), this, SLOT(sobre()));
 }
@@ -148,12 +144,13 @@ void MainWindow::criarAcoes() {
 
 void MainWindow::criarMenu() {
     menuArquivo = new QMenu(tr("&Arquivo"), this);
-    menuArquivo->addAction(acaoAbrir);
 
     menuSalvarComo = new QMenu(tr("&Salvar como"), this);
     foreach (QAction *action, acaoSalvarComo)
         menuSalvarComo->addAction(action);
 
+    menuArquivo->addAction(acaoAbrir);
+    menuArquivo->addAction(acaoSalvar);
     menuArquivo->addMenu(menuSalvarComo);
     menuArquivo->addSeparator();
     menuArquivo->addAction(acaoSair);
@@ -173,16 +170,13 @@ void MainWindow::criarMenu() {
 
     menuBar()->addMenu(menuArquivo);
     menuBar()->addMenu(menuOpcoes);
-
     menuBar()->addMenu(menuSobre);
 }
 
 
 bool MainWindow::salvarAlteracoes() {
     if (miniPaint->getAlterado()) {
-       QMessageBox::StandardButton ret;
-       ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-
+       QMessageBox::StandardButton ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
        if (ret == QMessageBox::Save)
            return salvarArquivo("png");
         else if (ret == QMessageBox::Cancel)
@@ -193,6 +187,7 @@ bool MainWindow::salvarAlteracoes() {
 
 
 bool MainWindow::salvarArquivo(const QByteArray &fileFormat) {
+    //QMessageBox::about(this, tr("teste"), tr("%1").arg(fileName));
     QString initialPath = QDir::homePath() + "/meuArquivo." + fileFormat;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("%1 Files (*.%2);;All Files (*)").arg(QString::fromLatin1(fileFormat.toUpper())).arg(QString::fromLatin1(fileFormat)));
     if (fileName.isEmpty())

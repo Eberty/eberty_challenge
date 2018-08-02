@@ -5,7 +5,7 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     setAttribute(Qt::WA_StaticContents);
     alterado = false;
     desenhando = false;
-    larguraDaCaneta  = 2;
+    larguraDaCaneta  = 3;
     corDaCaneta = Qt::black;
     tipoDeDesenho = quadrado;
     b_imagemAntiga = false;
@@ -31,9 +31,8 @@ bool MiniPaint::salvarImagem(const QString &fileName, const char *fileFormat) {
     if (visibleImage.save(fileName, fileFormat)) {
         alterado = false;
         return true;
-    } else {
+    } else
         return false;
-    }
 }
 
 
@@ -76,8 +75,9 @@ void MiniPaint::setImagemNova(){
     }
 }
 
+
 void MiniPaint::limparImagem() {
-    imagem.fill(qRgb(255, 255, 255));
+    imagem.fill(Qt::white);
     alterado = true;
     update();
 }
@@ -155,9 +155,7 @@ void MiniPaint::paintEvent(QPaintEvent *event) {
 
 void MiniPaint::resizeEvent(QResizeEvent *event) {
     if (width() > imagem.width() || height() > imagem.height()) {
-        int newWidth = qMax(width() + 128, imagem.width());
-        int newHeight = qMax(height() + 128, imagem.height());
-        redimensionarTela(&imagem, QSize(newWidth, newHeight));
+        redimensionarTela(&imagem, QSize(qMax(width() + 128, imagem.width()), qMax(height() + 128, imagem.height())));
         update();
     }
     QWidget::resizeEvent(event);
@@ -167,8 +165,8 @@ void MiniPaint::resizeEvent(QResizeEvent *event) {
 void MiniPaint::desenharQuadrado(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    alterado = true;
     painter.drawRect(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
+    alterado = true;
     update();
 }
 
@@ -176,8 +174,8 @@ void MiniPaint::desenharQuadrado(const QPoint &endPoint) {
 void MiniPaint::desenharCirculo(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    alterado = true;
     painter.drawEllipse(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
+    alterado = true;
     update();
 }
 
@@ -185,13 +183,13 @@ void MiniPaint::desenharCirculo(const QPoint &endPoint) {
 void MiniPaint::desenharTriangulo(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    alterado = true;
     const QPointF points[3] = {
         QPointF(lastPoint.x(), lastPoint.y()),
         QPointF((lastPoint.x() + endPoint.x())/2, endPoint.y()),
         QPointF(endPoint.x(), lastPoint.y())
     };
     painter.drawPolygon(points, 3);
+    alterado = true;
     update();
 }
 
@@ -200,20 +198,20 @@ void MiniPaint::desenhoLivre(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
-    alterado = true;
     int rad = (larguraDaCaneta / 2) + 2;
+    alterado = true;
     update(QRect(lastPoint, endPoint).normalized().adjusted(-rad, -rad, +rad, +rad));
     lastPoint = endPoint;
 }
 
 
 void MiniPaint::redimensionarTela(QImage *imagem, const QSize &newSize) {
-    if (imagem->size() == newSize)
-        return;
-    QImage newImage(newSize, QImage::Format_RGB32);
-    newImage.fill(qRgb(255, 255, 255));
-    QPainter painter(&newImage);
-    painter.drawImage(QPoint(0, 0), *imagem);
-    *imagem = newImage;
+    if (imagem->size() != newSize){
+        QImage newImage(newSize, QImage::Format_RGB32);
+        newImage.fill(Qt::white);
+        QPainter painter(&newImage);
+        painter.drawImage(QPoint(0, 0), *imagem);
+        *imagem = newImage;
+    }
 }
 

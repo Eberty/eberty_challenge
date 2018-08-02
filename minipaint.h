@@ -18,6 +18,7 @@ public:
 
     bool abrirImagem(const QString &fileName);
     bool salvarImagem(const QString &fileName, const char *fileFormat);
+
     void setCorCaneta(const QColor &newColor);
     void setLarguraCaneta(int newWidth);
     void setTipoDeDesenho(int newFormat);
@@ -57,7 +58,6 @@ private:
     void desenharTriangulo(const QPoint &endPoint);
     void desenhoLivre(const QPoint &endPoint);
     void redimensionarTela(QImage *image, const QSize &newSize);
-
 
     bool alterado;
     bool desenhando;

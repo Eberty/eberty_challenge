@@ -8,7 +8,9 @@ typedef enum {
     livre, quadrado, circulo, triangulo, reta, nada
 } t_desenho;
 
+
 class MiniPaint;
+
 
 class MainWindow : public QMainWindow
 {
@@ -24,7 +26,6 @@ protected:
 private slots: // Trigger
     void abrir();
     void salvar();
-    //sair = close function
     void corCaneta();
     void larguraCaneta();
     void tipoDesenho();
@@ -40,6 +41,7 @@ private:
     bool salvarArquivo(const QByteArray &fileFormat);
 
     MiniPaint *miniPaint;
+    QString fileName;
 
     QMenu *menuArquivo;
     QMenu *menuSalvarComo;
@@ -47,6 +49,7 @@ private:
     QMenu *menuSobre;
 
     QAction *acaoAbrir;
+    QAction *acaoSalvar;
     QList<QAction *> acaoSalvarComo;
     QAction *acaoSair;
     QAction *acaoCorCaneta;
