@@ -20,9 +20,8 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     desenhando = false;
     larguraDaCaneta  = 3;
     corDaCaneta = Qt::black;
-    tipoDeDesenho = quadrado;
-    qtdImagens = 0;
-    //b_imagemAntiga = false;
+    tipoDeDesenho = livre;
+    indiceImagem = 0;
 }
 
 
@@ -66,31 +65,35 @@ void MiniPaint::setTipoDeDesenho(int newFormat) {
 
 
 void MiniPaint::setImagemAntiga(){
-    if(qtdImagens > 0){
+    if(indiceImagem > 0){
+        if(indiceImagem == imagens.size()){
+            MiniPaint::addImagem();
+            --indiceImagem;
+        }
         QPainter painter(&imagem);
-        outraImagem = *imagens.at(--qtdImagens);
+        outraImagem = *imagens.at(--indiceImagem);
         painter.drawImage(QPoint(0, 0), outraImagem);
         update();
     } else {
-        QMessageBox::about(this, tr("Ultima Imagem!"), tr("Não é mais possível voltar"));
+        QMessageBox::about(this, tr("Ultima Imagem!"), tr("Não é mais possível recuar"));
     }
 }
 
 
 void MiniPaint::setImagemNova(){
-    if(qtdImagens < imagens.size()-1){
+    if(indiceImagem < imagens.size()-1){
         QPainter painter(&imagem);
-        outraImagem = *imagens.at(++qtdImagens);
+        outraImagem = *imagens.at(++indiceImagem);
         painter.drawImage(QPoint(0, 0), outraImagem);
         update();
     } else {
-        QMessageBox::about(this, tr("Imagem Nova!"), tr("Não há mais o que avançar"));
+        QMessageBox::about(this, tr("Imagem mais recente!"), tr("Não há mais o que avançar"));
     }
 }
 
 
 void MiniPaint::limparImagem() {
-    while (qtdImagens < imagens.size()){
+    while (indiceImagem < imagens.size()){
         imagens.pop_back();
     }
     MiniPaint::addImagem();
@@ -105,14 +108,14 @@ void MiniPaint::addImagem(){
     QImage *aux = new QImage;
     *aux = imagem.copy();
     imagens.push_back(aux);
-    qtdImagens++;
+    indiceImagem++;
 }
 
 
 void MiniPaint::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         if(MiniPaint::getTipoDesenho() != nada){
-            while (qtdImagens < imagens.size()){
+            while (indiceImagem < imagens.size()){
                 imagens.pop_back();
             }
             MiniPaint::addImagem();

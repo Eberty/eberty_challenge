@@ -86,9 +86,7 @@ private:
 
     QList<QImage *> imagens;
     QImage outraImagem;
-    int qtdImagens;
-    //QImage imagemAntiga;
-    //bool b_imagemAntiga;
+    int indiceImagem;
 };
 
 #endif
