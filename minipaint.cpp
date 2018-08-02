@@ -7,7 +7,7 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     desenhando = false;
     larguraDaCaneta  = 2;
     corDaCaneta = Qt::black;
-    tipoDeDesenho = circulo;
+    tipoDeDesenho = quadrado;
     //inserir primeira imagem na lista
 }
 
@@ -142,9 +142,7 @@ void MiniPaint::desenharQuadrado(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     modificado = true;
-    int rad = (larguraDaCaneta / 2) + 2;
-    QRectF rectangle(lastPoint.x(), endPoint.y(), endPoint.x(), lastPoint.y());
-    painter.drawRect(rectangle.normalized().adjusted(-rad, -rad, +rad, +rad));
+    painter.drawRect(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
     update();
     lastPoint = endPoint;
 }
@@ -154,9 +152,7 @@ void MiniPaint::desenharCirculo(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     modificado = true;
-    int rad = (larguraDaCaneta / 2) + 2;
-    QRectF rectangle(lastPoint.x(), endPoint.y(), endPoint.x(), lastPoint.y());
-    painter.drawEllipse(rectangle.normalized().adjusted(-rad, -rad, +rad, +rad));
+    painter.drawEllipse(lastPoint.x(), lastPoint.y(), endPoint.x()-lastPoint.x(), endPoint.y()-lastPoint.y());
     update();
     lastPoint = endPoint;
 }
@@ -166,12 +162,10 @@ void MiniPaint::desenharTriangulo(const QPoint &endPoint) {
     QPainter painter(&imagem);
     painter.setPen(QPen(corDaCaneta, larguraDaCaneta, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     modificado = true;
-    int rad = (larguraDaCaneta / 2) + 2;
-    //QRectF rectangle(lastPoint.x(), endPoint.y(), endPoint.x(), lastPoint.y());
-    static const QPointF points[3] = {
-        QPointF(10.0, 80.0),
-        QPointF(20.0, 10.0),
-        QPointF(80.0, 30.0)
+    const QPointF points[3] = {
+        QPointF(lastPoint.x(), lastPoint.y()),
+        QPointF((lastPoint.x() + endPoint.x())/2, endPoint.y()),
+        QPointF(endPoint.x(), lastPoint.y())
     };
     painter.drawPolygon(points, 3);
     update();
