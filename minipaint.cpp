@@ -128,6 +128,8 @@ void MiniPaint::limparImagem() {
         imagens.pop_back();
     if (indiceUltimoClean != indiceImagem)
         MiniPaint::addImagem();
+    if (indiceImagem == 0)
+        MiniPaint::addImagem();
 
     imagem.fill(Qt::white);
     alterado = true;
