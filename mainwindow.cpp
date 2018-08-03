@@ -41,18 +41,19 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 
 void MainWindow::abrir() {
+    QString fileName;
     if (salvarAlteracoes()){
         fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Imangens (*.png *.jpg *.jpeg *.bmp *ppm)"));
-        if (!fileName.isEmpty())
+        if (!fileName.isEmpty()){
             miniPaint->abrirImagem(fileName);
+            this->fileName = fileName;
+        }
     }
 }
 
 
 void MainWindow::salvar() {
-    QAction *action = qobject_cast<QAction *>(sender());
-    QByteArray fileFormat = action->data().toByteArray();
-    salvarArquivoComo("png");
+    salvarArquivoComo("");
 }
 
 
@@ -210,7 +211,7 @@ bool MainWindow::salvarAlteracoes() {
        QMessageBox::StandardButton ret = QMessageBox::question(this, tr("MiniPaint"), tr("Deseja salvar as modificações?"),
                                                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
        if (ret == QMessageBox::Save)
-           return salvarArquivoComo("png");
+           return salvarArquivoComo("");
         else if (ret == QMessageBox::Cancel)
            return false;
     }
@@ -221,25 +222,40 @@ bool MainWindow::salvarAlteracoes() {
 bool MainWindow::salvarArquivoComo(const QByteArray &fileFormat) {
     QString initialPath;
     QString fileName;
+    QString str;
+
     if (this->fileName == ""){
-        initialPath = QDir::homePath() + "/meuArquivo." + fileFormat;
-        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(fileFormat)));
+        str = fileFormat;
+        if (str == "")
+            str = "png";
+        initialPath = QDir::homePath() + "/meuArquivo." + str;
+        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(str.toUtf8())));
         if (fileName.isEmpty())
             return false;
         else
-            return miniPaint->salvarImagem(fileName, fileFormat.constData());
+            if (miniPaint->salvarImagem(fileName, fileFormat.constData())){
+                this->fileName = fileName;
+                return true;
+            } else {
+                return false;
+            }
     }else{
         initialPath = this->fileName.mid(0,this->fileName.lastIndexOf('.'));
-        QString str;
         if (fileFormat == "")
-            str = initialPath.mid(this->fileName.lastIndexOf('.'),this->fileName.size()-this->fileName.lastIndexOf('.'));
+            str = this->fileName.mid(this->fileName.lastIndexOf('.')+1,this->fileName.size()-this->fileName.lastIndexOf('.'));
         else
             str = fileFormat;
-        const QByteArray tmp = str.toUtf8();
-        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath+"."+tmp, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(tmp)));
+        if (str == "")
+            str = "png";
+        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath+"."+str, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(str.toUtf8())));
         if (fileName.isEmpty())
             return false;
         else
-            return miniPaint->salvarImagem(fileName, tmp.constData());
+            if (miniPaint->salvarImagem(fileName, str.toUtf8().constData())){
+                this->fileName = fileName;
+                return true;
+            } else {
+                return false;
+            }
     }
 }

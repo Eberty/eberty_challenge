@@ -34,7 +34,6 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
     redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
     alterado = false;
-
     imagens.clear();
     indiceImagem = 0;
     update();
@@ -180,8 +179,8 @@ void MiniPaint::mouseReleaseEvent(QMouseEvent *event) {
 
 void MiniPaint::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
-    QRect dirtyRect = event->rect();
-    painter.drawImage(dirtyRect, imagem, dirtyRect);
+    painter.drawImage(QPoint(0, 0), imagem);
+    QWidget::paintEvent(event);
 }
 
 
