@@ -31,7 +31,6 @@ bool MiniPaint::abrirImagem(const QString &nomeArquivo) {
     if (!loadedImage.load(nomeArquivo))
         return false;
     QSize newSize = loadedImage.size().expandedTo(size());
-    //resize(newSize);
     redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
     alterado = false;
