@@ -42,7 +42,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::abrir() {
     if (salvarAlteracoes()){
-        fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Image Files (*.png *.jpg *.jpeg *.bmp *ppm)"));
+        fileName = QFileDialog::getOpenFileName(this, tr("Abrindo arquivo..."), QDir::homePath(), tr("Imangens (*.png *.jpg *.jpeg *.bmp *ppm)"));
         if (!fileName.isEmpty())
             miniPaint->abrirImagem(fileName);
     }
@@ -116,12 +116,13 @@ void MainWindow::refazer(){
 
 
 void MainWindow::sobre() {
-    QMessageBox::about(this, tr("MiniPaint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br><br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
+    QMessageBox::about(this, tr("MiniPaint"), tr("<center>Desenvolvido por <b>Eberty Alves</b><br>"
+                                                 "<br>Acesse o <a href=\"https://github.com/romulogcerqueira/eberty_challenge\">Github</a> da ferramenta e saiba mais!</center>"));
 }
 
 
 void MainWindow::criarAcoes() {
-    acaoAbrir = new QAction(tr("&Abrir"), this);
+    acaoAbrir = new QAction(tr("Abrir"), this);
     acaoAbrir->setShortcuts(QKeySequence::Open);
     connect(acaoAbrir, SIGNAL(triggered()), this, SLOT(abrir()));
 
@@ -138,7 +139,7 @@ void MainWindow::criarAcoes() {
         acaoSalvarComo.append(action);
     }
 
-    acaoSair = new QAction(tr("&Sair"), this);
+    acaoSair = new QAction(tr("Sair"), this);
     acaoSair->setShortcuts(QKeySequence::Quit);
     connect(acaoSair, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -167,7 +168,7 @@ void MainWindow::criarAcoes() {
     connect(acaoLimparTela, SIGNAL(triggered()), miniPaint, SLOT(limparImagem()));
 
     acaoSobre = new QAction(tr("Sobre"), this);
-    acaoSobre->setShortcut(tr("Ctrl+h"));
+    acaoSobre->setShortcut(tr("Ctrl+H"));
     connect(acaoSobre, SIGNAL(triggered()), this, SLOT(sobre()));
 }
 
@@ -228,10 +229,14 @@ bool MainWindow::salvarArquivoComo(const QByteArray &fileFormat) {
         else
             return miniPaint->salvarImagem(fileName, fileFormat.constData());
     }else{
-        initialPath = this->fileName;
-        QString str = initialPath.mid(initialPath.lastIndexOf('.')+1,initialPath.size()-initialPath.lastIndexOf('.'));
+        initialPath = this->fileName.mid(0,this->fileName.lastIndexOf('.'));
+        QString str;
+        if (fileFormat == "")
+            str = initialPath.mid(this->fileName.lastIndexOf('.'),this->fileName.size()-this->fileName.lastIndexOf('.'));
+        else
+            str = fileFormat;
         const QByteArray tmp = str.toUtf8();
-        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(tmp)));
+        fileName = QFileDialog::getSaveFileName(this, tr("Salvar como..."), initialPath+"."+tmp, tr("Formato (*.%1);;Todos os arquivos (*)").arg(QString::fromLatin1(tmp)));
         if (fileName.isEmpty())
             return false;
         else

@@ -20,6 +20,7 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     desenhando = false;
     larguraDaCaneta  = 3;
     indiceImagem = 0;
+    indiceUltimoClean = 0;
     tipoDeDesenho = livre;
     corDaCaneta = Qt::black;
 }
@@ -33,6 +34,9 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
     redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
     alterado = false;
+
+    imagens.clear();
+    indiceImagem = 0;
     update();
     return true;
 }
@@ -74,6 +78,8 @@ void MiniPaint::setImagemAntiga(){
         outraImagem = *imagens.at(--indiceImagem);
         painter.drawImage(QPoint(0, 0), outraImagem);
         update();
+        if (indiceImagem == 0)
+            alterado = false;
     } else {
         QMessageBox::about(this, tr("Ultima Imagem!"), tr("Não é mais possível recuar"));
     }
@@ -86,6 +92,8 @@ void MiniPaint::setImagemNova(){
         outraImagem = *imagens.at(++indiceImagem);
         painter.drawImage(QPoint(0, 0), outraImagem);
         update();
+        if (indiceImagem != 0)
+            alterado = true;
     } else {
         QMessageBox::about(this, tr("Imagem mais recente!"), tr("Não há mais o que avançar"));
     }
@@ -93,13 +101,14 @@ void MiniPaint::setImagemNova(){
 
 
 void MiniPaint::limparImagem() {
-    while (indiceImagem < imagens.size()){
+    while (indiceImagem < imagens.size())
         imagens.pop_back();
-    }
-    MiniPaint::addImagem();
+    if (indiceUltimoClean != indiceImagem)
+        MiniPaint::addImagem();
 
     imagem.fill(Qt::white);
     alterado = true;
+    indiceUltimoClean = indiceImagem;
     update();
 }
 
@@ -109,15 +118,15 @@ void MiniPaint::addImagem(){
     *aux = imagem.copy();
     imagens.push_back(aux);
     indiceImagem++;
+    indiceUltimoClean = 0;
 }
 
 
 void MiniPaint::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         if(MiniPaint::getTipoDesenho() != nada){
-            while (indiceImagem < imagens.size()){
+            while (indiceImagem < imagens.size())
                 imagens.pop_back();
-            }
             MiniPaint::addImagem();
         }
         lastPoint = event->pos();
@@ -178,7 +187,7 @@ void MiniPaint::paintEvent(QPaintEvent *event) {
 
 void MiniPaint::resizeEvent(QResizeEvent *event) {
     if (width() > imagem.width() || height() > imagem.height()) {
-        redimensionarTela(&imagem, QSize(qMax(width() + 128, imagem.width()), qMax(height() + 128, imagem.height())));
+        redimensionarTela(&imagem, QSize(qMax(width()+128, imagem.width()), qMax(height()+128, imagem.height())));
         update();
     }
     QWidget::resizeEvent(event);

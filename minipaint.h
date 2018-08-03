@@ -88,6 +88,7 @@ private:
     QImage imagem;
     QImage outraImagem;
     int indiceImagem;
+    int indiceUltimoClean;
 };
 
 #endif

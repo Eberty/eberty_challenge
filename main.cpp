@@ -8,7 +8,7 @@
  *
  *
  * Data de Criação: 31 de julho de 2018
- * Última modificação: 02 de agosto de 2018
+ * Última modificação: 03 de agosto de 2018
  *
  * Descrição:
  *      - Abre imagens ou cria novas
