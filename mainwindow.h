@@ -56,7 +56,7 @@ private:
     bool salvarArquivoComo(const QByteArray &fileFormat);
 
     MiniPaint *miniPaint;
-    QString fileName;
+    QString nomeArquivo;
 
     QAction *acaoAbrir;
     QAction *acaoSalvar;

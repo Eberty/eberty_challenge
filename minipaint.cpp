@@ -26,11 +26,12 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
 }
 
 
-bool MiniPaint::abrirImagem(const QString &fileName) {
+bool MiniPaint::abrirImagem(const QString &nomeArquivo) {
     QImage loadedImage;
-    if (!loadedImage.load(fileName))
+    if (!loadedImage.load(nomeArquivo))
         return false;
     QSize newSize = loadedImage.size().expandedTo(size());
+    //resize(newSize);
     redimensionarTela(&loadedImage, newSize);
     imagem = loadedImage;
     alterado = false;
@@ -41,10 +42,10 @@ bool MiniPaint::abrirImagem(const QString &fileName) {
 }
 
 
-bool MiniPaint::salvarImagem(const QString &fileName, const char *fileFormat) {
+bool MiniPaint::salvarImagem(const QString &nomeArquivo, const char *fileFormat) {
     QImage visibleImage = imagem;
     redimensionarTela(&visibleImage, size());
-    if (visibleImage.save(fileName, fileFormat)) {
+    if (visibleImage.save(nomeArquivo, fileFormat)) {
         alterado = false;
         return true;
     } else
@@ -98,6 +99,30 @@ void MiniPaint::setImagemNova(){
     }
 }
 
+
+bool MiniPaint::getAlterado() const {
+    return alterado;
+}
+
+
+QColor MiniPaint::getCorCaneta() const {
+    return corDaCaneta;
+}
+
+
+int MiniPaint::getLarguraCaneta() const {
+    return larguraDaCaneta;
+}
+
+
+int MiniPaint::getTipoDesenho() const {
+    return tipoDeDesenho;
+}
+
+
+QImage MiniPaint::getImagem() const{
+    return imagem;
+}
 
 void MiniPaint::limparImagem() {
     while (indiceImagem < imagens.size())
@@ -185,10 +210,7 @@ void MiniPaint::paintEvent(QPaintEvent *event) {
 
 
 void MiniPaint::resizeEvent(QResizeEvent *event) {
-    if (width() > imagem.width() || height() > imagem.height()) {
-        redimensionarTela(&imagem, QSize(qMax(width()+128, imagem.width()), qMax(height()+128, imagem.height())));
-        update();
-    }
+    redimensionarTela(&imagem, QSize(qMax(width(), imagem.width()), qMax(height(), imagem.height())));
     QWidget::resizeEvent(event);
 }
 

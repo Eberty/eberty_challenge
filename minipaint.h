@@ -29,8 +29,8 @@ class MiniPaint : public QWidget
 public:
     MiniPaint(QWidget *parent = 0);
 
-    bool abrirImagem(const QString &fileName);
-    bool salvarImagem(const QString &fileName, const char *fileFormat);
+    bool abrirImagem(const QString &nomeArquivo);
+    bool salvarImagem(const QString &nomeArquivo, const char *fileFormat);
     void addImagem();
 
     void setCorCaneta(const QColor &newColor);
@@ -39,21 +39,11 @@ public:
     void setImagemAntiga();
     void setImagemNova();
 
-    bool getAlterado() const {
-        return alterado;
-    }
-
-    QColor getCorCaneta() const {
-        return corDaCaneta;
-    }
-
-    int getLarguraCaneta() const {
-        return larguraDaCaneta;
-    }
-
-    int getTipoDesenho() const {
-        return tipoDeDesenho;
-    }
+    bool getAlterado() const;
+    QColor getCorCaneta() const;
+    int getLarguraCaneta() const;
+    int getTipoDesenho() const;
+    QImage getImagem() const;
 
 
 public slots:
