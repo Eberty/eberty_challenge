@@ -31,7 +31,6 @@ public:
 
     bool abrirImagem(const QString &fileName);
     bool salvarImagem(const QString &fileName, const char *fileFormat);
-
     void addImagem();
 
     void setCorCaneta(const QColor &newColor);
@@ -60,12 +59,14 @@ public:
 public slots:
     void limparImagem();
 
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
 
 private:
     void desenharQuadrado(const QPoint &endPoint);

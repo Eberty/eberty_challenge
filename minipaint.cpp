@@ -19,9 +19,9 @@ MiniPaint::MiniPaint(QWidget *parent) : QWidget(parent) {
     alterado = false;
     desenhando = false;
     larguraDaCaneta  = 3;
-    corDaCaneta = Qt::black;
-    tipoDeDesenho = livre;
     indiceImagem = 0;
+    tipoDeDesenho = livre;
+    corDaCaneta = Qt::black;
 }
 
 
@@ -156,6 +156,7 @@ void MiniPaint::mouseReleaseEvent(QMouseEvent *event) {
             break;
         case reta:
             desenhoLivre(event->pos());
+            break;
         case texto:
             desenharTexto(event->pos());
             break;

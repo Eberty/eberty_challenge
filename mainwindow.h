@@ -40,6 +40,7 @@ protected:
 private slots: // Trigger
     void abrir();
     void salvar();
+    void salvarComo();
     void corCaneta();
     void larguraCaneta();
     void tipoDesenho();
@@ -52,15 +53,10 @@ private:
     void criarMenu();
 
     bool salvarAlteracoes();
-    bool salvarArquivo(const QByteArray &fileFormat);
+    bool salvarArquivoComo(const QByteArray &fileFormat);
 
     MiniPaint *miniPaint;
     QString fileName;
-
-    QMenu *menuArquivo;
-    QMenu *menuSalvarComo;
-    QMenu *menuOpcoes;
-    QMenu *menuSobre;
 
     QAction *acaoAbrir;
     QAction *acaoSalvar;
@@ -73,6 +69,11 @@ private:
     QAction *acaoRefazer;
     QAction *acaoLimparTela;
     QAction *acaoSobre;
+
+    QMenu *menuArquivo;
+    QMenu *menuSalvarComo;
+    QMenu *menuOpcoes;
+    QMenu *menuSobre;
 };
 
 #endif
