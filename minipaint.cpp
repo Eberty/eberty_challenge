@@ -209,7 +209,7 @@ void MiniPaint::paintEvent(QPaintEvent *event) {
 
 
 void MiniPaint::resizeEvent(QResizeEvent *event) {
-    redimensionarTela(&imagem, QSize(qMax(width(), imagem.width()), qMax(height(), imagem.height())));
+    redimensionarTela(&imagem, QSize(width(), height()));
     QWidget::resizeEvent(event);
 }
 
